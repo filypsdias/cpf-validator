@@ -76,7 +76,5 @@ definitions:
     properties:
       status:
         description: 'CPF Status'
-        example: 0
-        type: integer
-        format: int32
-
+        example: 'ABLE_T0_VOTE'
+        type: string
