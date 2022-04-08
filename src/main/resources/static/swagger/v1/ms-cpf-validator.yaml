@@ -1,0 +1,82 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: filypsdias - CPF Validator
+  description: CPF Validator Service
+basePath: /ms-cpf-validator/v1
+paths:
+  '/users/{cpf}':
+    get:
+      description: Validates if the given user CPF is valid
+      summary: Validates if the given user CPF is valid
+      tags:
+        - User
+      operationId: GetUserCpfValidation
+      produces:
+        - application/json
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          type: string
+          description: 'Eleven character string CPF. Ex: **00011122233**'
+      responses:
+        '200':
+          description: 'User CPF Status Object'
+          schema:
+            $ref: '#/definitions/UserCpfStatusDTO'
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/Fault'
+          examples:
+            application/json:
+              code: VALIDATION_ERROR
+              message: "Validation failed"
+              details: [ "Constraint violation" ]
+        '404':
+          description: Wrong Format CPF
+          schema:
+            $ref: '#/definitions/Fault'
+          examples:
+            application/json:
+              code: WRONG_FORMAT_CPF
+              message: "Given CPF is in a wrong format"
+              details: [ "The given CPF *** is with a wrong format" ]
+definitions:
+  ErrorCodeEnum:
+    type: string
+    enum:
+      - ACCESS_DENIED
+      - PAYLOAD_TOO_LARGE
+      - TOO_MANY_REQUESTS
+      - UNEXPECTED_ERROR
+      - VALIDATION_ERROR
+      - UNAUTHORIZED
+      - WRONG_FORMAT_CPF
+  Fault:
+    title: Fault
+    type: object
+    properties:
+      code:
+        $ref: '#/definitions/ErrorCodeEnum'
+      message:
+        description: Error description
+        example: Internal Server Error
+        type: string
+      details:
+        description: Error detailed description
+        type: array
+        items:
+          type: string
+        example: [ Internal Server Error - An error has ocurred calling partner API. ]
+  UserCpfStatusDTO:
+    type: 'object'
+    description: 'Structure used to return a user cpf status information'
+    properties:
+      status:
+        description: 'CPF Status'
+        example: 0
+        type: integer
+        format: int32
+
